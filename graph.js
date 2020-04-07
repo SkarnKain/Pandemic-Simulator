@@ -158,7 +158,6 @@ function Graph(max_y1, max_y2, max_x) {
         line(width - 550, 400, width - 50, 400)
         textSize(10);
         textAlign(CENTER);
-        text(this.max_y1, width - 550, 45);
         textAlign(CENTER);
         text(0, width - 550, 410);
         line(width - 550, 400, width - 550, 50);
@@ -170,6 +169,15 @@ function Graph(max_y1, max_y2, max_x) {
             fill(255, 50);
             stroke(255, 50);
             line(posX, 400, posX, 50);
+        }
+        for (var i = 1; i <= floor(this.max_y1 / 100); i++) {
+            var posY = map(i, 0, this.max_y1 / 100, 400, 50);
+            fill(255);
+            stroke(255)
+            text(i * 100, width - 565, posY+5);
+            fill(255, 50);
+            stroke(255, 50);
+            line(width - 550, posY, width - 50, posY);
         }
 
 
