@@ -64,6 +64,7 @@ function Agent(x, y, santé, dna) {
 
     this.tictac = 0;
     this.jours_maladie = 0;
+    this.jours_remis = 0;
 
 
     this.update = function () {
@@ -107,6 +108,7 @@ function Agent(x, y, santé, dna) {
                 case 0:
                     if (this.jours_maladie > 5) {
                         this.santé = "R";
+                        this.jours_maladie = 0;
                         this.symptome = "RAS";
                         this.virus_distance = 0;
                         this.virus_transmission = 0;
@@ -119,6 +121,7 @@ function Agent(x, y, santé, dna) {
                         this.virus_transmission = virus.SL_P_T;
                     } else if (this.jours_maladie > 10) {
                         this.santé = "R";
+                        this.jours_maladie = 0;
                         this.symptome = "RAS";
                         this.virus_distance = 0;
                         this.virus_transmission = 0;
@@ -135,6 +138,7 @@ function Agent(x, y, santé, dna) {
                         this.virus_transmission = virus.SE_P_T;
                     } else if (this.jours_maladie > 20) {
                         this.santé = "R";
+                        this.jours_maladie = 0;
                         this.symptome = "RAS";
                         this.virus_distance = 0;
                         this.virus_transmission = 0;
@@ -157,6 +161,7 @@ function Agent(x, y, santé, dna) {
                             this.virus_transmission = 0;
                         } else if (this.santé != "M") {
                             this.santé = "R";
+                            this.jours_maladie = 0;
                             this.symptome = "RAS";
                             this.virus_distance = 0;
                             this.virus_transmission = 0;
@@ -169,12 +174,24 @@ function Agent(x, y, santé, dna) {
                             this.virus_transmission = 0;
                         } else if (this.status_depl != "M") {
                             this.santé = "R";
+                            this.jours_maladie = 0;
                             this.symptome = "RAS";
                             this.virus_distance = 0;
                             this.virus_transmission = 0;
                         }
                     }
                     break;
+            }
+        }
+        if (this.santé == "R") {
+            this.tictac += 1;
+            if (this.tictac == frames_jour) {
+                this.tictac = 0;
+                this.jours_remis += 1;
+            }
+            if (this.jours_remis > delai_immun) {
+                this.santé = "S";
+                this.jours_remis = 0;
             }
         }
     }
@@ -360,20 +377,20 @@ function Agent(x, y, santé, dna) {
         if (this.santé == "R") {
             var col = colors.R;
         }
-        
+
         fill(col);
         stroke(col);
-        
+
         strokeWeight(3);
         point(0, 0);
-        
+
         //strokeWeight(1);
         //beginShape();
         //vertex(0, -this.r * 2);
         //vertex(-this.r, this.r * 2);
         //vertex(this.r, this.r * 2);
         //endShape(CLOSE);
-        
+
         if (this.santé == "I") {
             noFill()
             strokeWeight(1);
@@ -432,7 +449,6 @@ function Agent(x, y, santé, dna) {
         textAlign(CENTER);
 
         rect(posX - 12, posY - 12, 24, 14);
-
     }
 
 }

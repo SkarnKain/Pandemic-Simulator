@@ -1,6 +1,7 @@
 function start_sim() {
 
     slider_capa_hop.hide();
+    slider_delai_immun.hide();
     slider_sd_date_on.hide();
     slider_sd_date_off.hide();
     slider_sd2_date_on.hide();
@@ -28,8 +29,6 @@ function start_sim() {
     hopital = new Boite("Hopital", hopital_dim[0], hopital_dim[1], hopital_dim[2], hopital_dim[3], 10, capa_hop, 0);
     quarantaine = new Boite("Quarantaine", quarantaine_dim[0], quarantaine_dim[1], quarantaine_dim[2], quarantaine_dim[3], 10, capa_qt, 0);
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Création des zones pour la ville    
     var nb_z_vil = 8;
     var z_vi_os = max([social_distance, virus.A_D_T, virus.SL_D_T, virus.SF_D_T, virus.SE_D_T]);
@@ -48,8 +47,6 @@ function start_sim() {
     zones[(nb_z_vil * nb_z_vil)] = new Zone(hopital.x1, hopital.y1, hopital.x2, hopital.y2);
     // Création de la zone quarantaine
     zones[((nb_z_vil * nb_z_vil) + 1)] = new Zone(quarantaine.x1, quarantaine.y1, quarantaine.x2, quarantaine.y2);
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var x = random(ville.x1, ville.x2);
     var y = random(ville.y1, ville.y2);
@@ -69,7 +66,12 @@ function start_sim() {
         checkbox_qt_sl = createCheckbox("Forcer la quarantaine pour les personnes présentant des symptômes légers");
     }
 
-
+    radio_graph_visu = createRadio();
+    radio_graph_visu.option('Visuation linéaire ----', 0);
+    radio_graph_visu.option(' Visuation logarithmique', 1);
+    radio_graph_visu.value('0');
+    radio_graph_visu.position(width - 460, 425);
+    radio_graph_visu.style('color', color(255));
 }
 
 function simulation() {
@@ -127,8 +129,6 @@ function simulation() {
     quarantaine.display();
 
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     for (var i = zones.length - 1; i >= 0; i--) {
         zones[i].list_ag = [];
         zones[i].num_list_ag = [];
@@ -139,8 +139,6 @@ function simulation() {
         zones[i].sd_zone(social_distance);
         zones[i].trans_zone();
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     for (var i = agents.length - 1; i >= 0; i--) {
@@ -216,8 +214,10 @@ function simulation() {
 
 
     var decal_txt = 40;
-
-    textSize(25);
+    
+    strokeWeight(1);
+    
+    textSize(20);
     fill(255);
     stroke(255);
     textAlign(LEFT);
@@ -226,16 +226,16 @@ function simulation() {
     text(jour, ville.x2 + 300 - 20, decal_txt);
 
     decal_txt += 70;
-    textSize(25);
+    textSize(20);
     fill(colors.S);
     stroke(colors.S);
     textAlign(LEFT);
-    text('Sains :', ville.x2 + 20, decal_txt);
+    text('Sains - Non-immunisés :', ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_santé[0], ville.x2 + 300 - 20, decal_txt);
 
     decal_txt += 50;
-    textSize(25);
+    textSize(20);
     fill(colors.I);
     stroke(colors.I);
     textAlign(LEFT);
@@ -280,7 +280,7 @@ function simulation() {
     text(count_symptome[3], ville.x2 + 300 - 20, decal_txt);
 
     decal_txt += 40;
-    textSize(25);
+    textSize(20);
     fill(colors.M);
     stroke(colors.M);
     textAlign(LEFT);
@@ -289,15 +289,15 @@ function simulation() {
     text(count_santé[2], ville.x2 + 300 - 20, decal_txt);
 
     decal_txt += 50;
-    textSize(25);
+    textSize(20);
     fill(colors.R);
     stroke(colors.R);
     textAlign(LEFT);
-    text('Remis :', ville.x2 + 20, decal_txt);
+    text('Remis - Immunisée :', ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_santé[3], ville.x2 + 300 - 20, decal_txt);
 
-    textSize(25);
+    textSize(20);
     fill(colors.I);
     stroke(colors.I);
     textAlign(LEFT);

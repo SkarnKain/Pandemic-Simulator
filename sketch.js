@@ -2,20 +2,35 @@ var simulation_on = false; // Etat de lancement de la simulation
 
 var nb_agents = 1000; // Nombre total d'agent
 var capa_hop = 0; // Capacité de l'hopital (redéfinie ultérieurement via menu)
+var delai_immun = 100; // Nombre de jours de conservation de l'immunité après rémission (redéfini ultérieurement via menu)
+
 
 //Position des différents menus
-var capa_hop_menu_pos = [350, 400];
-var title_menu_pos = [900, 150];
-var sd_menu_pos = [900, 400];
-var sd2_menu_pos = [900, 550];
-var resp_sd_menu_pos = [900, 700];
-var capa_qt_menu_pos = [1450, 400];
-var qt_sf_menu_pos = [1450, 530];
-var qt_sl_menu_pos = [1450, 680];
+var posY_t = 100;
+var posX_t = 900;
+var posY_m = posY_t + 200;
+var posX_C1 = 350;
+var posX_C2 = 900;
+var posX_C3 = 1450;
+
+var title_menu_pos = [posX_t, posY_t];
+
+var capa_hop_menu_pos = [posX_C1, posY_m];
+var delai_immun_menu_pos = [posX_C1, posY_m + 150];
+
+var sd_menu_pos = [posX_C2, posY_m];
+var sd2_menu_pos = [posX_C2, posY_m + 150];
+var resp_sd_menu_pos = [posX_C2, posY_m + 300];
+
+var capa_qt_menu_pos = [posX_C3, posY_m];
+var qt_sf_menu_pos = [posX_C3, posY_m + 130];
+var qt_sl_menu_pos = [posX_C3, posY_m + 280];
+
 
 var agents = []; // Liste des objets-agents
 var zones = []; // Liste des objets-zones
 var graph; // Objet-Graphique
+
 
 var social_distance = 15; // Distance respectée en cas de distanciation sociale
 var sd_value = false; // Activation (true) ou non (false) de la distanciation sociale
@@ -57,6 +72,7 @@ function draw() {
             checkbox_visu_status.show();
         }
         simulation();
+        radio_graph_visu.show();
     } else {
         menu();
     }
