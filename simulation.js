@@ -70,7 +70,7 @@ function start_sim() {
     radio_graph_visu.option('Visuation linéaire ----', 0);
     radio_graph_visu.option(' Visuation logarithmique', 1);
     radio_graph_visu.value('0');
-    radio_graph_visu.position(width - 460, 425);
+    radio_graph_visu.position(width - 460, 525);
     radio_graph_visu.style('color', color(255));
 }
 

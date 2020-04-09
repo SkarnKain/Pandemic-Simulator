@@ -14,7 +14,7 @@ function Agent(x, y, santé, dna) {
     this.virus_transmission = 0;
 
     this.status_depl = "L"; // Libre = "L" - Hospitalisé = "H" - Mort = "M" - Quarantaine = "Q"
-    this.hopital_si_malade = true;
+    this.ho_si_malade = true;
     this.qt_si_malade = true;
 
     this.nb_conta = 0;
@@ -213,6 +213,7 @@ function Agent(x, y, santé, dna) {
         // Sortie hopital
         if ((this.santé == "R") & (this.status_depl == "H")) {
             this.status_depl = "L";
+            this.ho_si_malade = true;
             hopital.count -= 1;
             ville.count += 1;
         }
@@ -226,7 +227,6 @@ function Agent(x, y, santé, dna) {
             if (((this.symptome == "SF") | (this.symptome == "SE")) & (quarantaine.count < quarantaine.capa) & (this.status_depl != "Q") & (this.status_depl != "H")) {
                 this.status_depl = "Q";
                 quarantaine.count += 1;
-                //console.log("Q - Ent. agent ", num, "Tot. Q : ", quarantaine.count);
                 ville.count -= 1;
             }
         }
@@ -234,21 +234,19 @@ function Agent(x, y, santé, dna) {
             if ((this.symptome == "SL") & (quarantaine.count < quarantaine.capa) & (this.status_depl != "Q") & (this.status_depl != "H")) {
                 this.status_depl = "Q";
                 quarantaine.count += 1;
-                //console.log("Q - Ent. agent ", num, "Tot. Q : ", quarantaine.count);
                 ville.count -= 1;
             }
         }
         // Sortie quarantaine
         if ((this.santé == "R") & (this.status_depl == "Q")) {
             this.status_depl = "L";
+            this.qt_si_malade = true;
             quarantaine.count -= 1;
-            //console.log("Q - Sor. - Rem. agent ", num, "Tot. Q : ", quarantaine.count);
             ville.count += 1;
         }
         if ((this.santé == "M") & (this.status_depl == "Q")) {
             this.status_depl = "M";
             quarantaine.count -= 1;
-            //console.log("Q - Sor. - Mor. agent ", num, "Tot. Q : ", quarantaine.count);
         }
 
         // Pour morts en ville
@@ -266,9 +264,9 @@ function Agent(x, y, santé, dna) {
             this.acceleration = this.acceleration.mult(0);
         } else if (this.status_depl == "H") {
             this.maxspeed = 1;
-            if (this.hopital_si_malade == true) {
+            if (this.ho_si_malade == true) {
                 this.position = createVector(random(hopital.x1, hopital.x2), random(hopital.y1, hopital.y2));
-                this.hopital_si_malade = false;
+                this.ho_si_malade = false;
             }
         } else if (this.status_depl == "Q") {
             this.maxspeed = 1;
