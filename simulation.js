@@ -1,5 +1,6 @@
 function start_sim() {
 
+    radio_lang.hide();
     slider_capa_hop.hide();
     slider_delai_immun.hide();
     slider_sd_date_on.hide();
@@ -25,9 +26,9 @@ function start_sim() {
     var ville_dim = [0, 0, 900, 900]; // X début - Y début - X taille - Y taille
     var hopital_dim = [925, 400, 300, 150];
     var quarantaine_dim = [925, 570, 300, 250];
-    ville = new Boite("Ville", ville_dim[0], ville_dim[1], ville_dim[2], ville_dim[3], 20, nb_agents, nb_agents);
-    hopital = new Boite("Hopital", hopital_dim[0], hopital_dim[1], hopital_dim[2], hopital_dim[3], 10, capa_hop, 0);
-    quarantaine = new Boite("Quarantaine", quarantaine_dim[0], quarantaine_dim[1], quarantaine_dim[2], quarantaine_dim[3], 10, capa_qt, 0);
+    ville = new Boite("pop", ville_dim[0], ville_dim[1], ville_dim[2], ville_dim[3], 20, nb_agents, nb_agents);
+    hopital = new Boite("ho", hopital_dim[0], hopital_dim[1], hopital_dim[2], hopital_dim[3], 10, capa_hop, 0);
+    quarantaine = new Boite("qt", quarantaine_dim[0], quarantaine_dim[1], quarantaine_dim[2], quarantaine_dim[3], 10, capa_qt, 0);
 
     // Création des zones pour la ville    
     var nb_z_vil = 8;
@@ -58,19 +59,27 @@ function start_sim() {
         agents[i] = new Agent(x, y, "S");
     }
 
-    checkbox_visu_depl = createCheckbox("Visualisation des déplacements - A désactiver pour accelérer la vitesse", true);
+
+    if (radio_lang.value() == 0) {
+        var menu_sim_txt = ["Visualisation des déplacements - Désactiver pour accelérer la simulation", "Visualisation - Status", "Forcer la distanciation sociale", "Forcer la quarantaine pour les personnes présentant des symptômes forts ou extrêmes", "Forcer la quarantaine pour les personnes présentant des symptômes légers", 'Visuation linéaire ', 'Visuation logarithmique'];
+    } else if (radio_lang.value() == 1) {
+        var menu_sim_txt = ["Visualization of movements - Deactivate to speed up simulation", "Visualization - Status", "Force social distancing", "Force quarantine for people with strong or extreme symptoms", "Force quarantine for people with mild symptoms ", 'Linear visualization', 'Logarithmic visualization'];
+    }
+
+
+    checkbox_visu_depl = createCheckbox(menu_sim_txt[0], true);
     if (checkbox_dev.checked()) {
-        checkbox_visu_status = createCheckbox("Visualisation - Status");
-        checkbox_sd = createCheckbox("Forcer la distanciation sociale");
-        checkbox_qt_sf = createCheckbox("Forcer la quarantaine pour les personnes présentant des symptômes forts ou extrêmes");
-        checkbox_qt_sl = createCheckbox("Forcer la quarantaine pour les personnes présentant des symptômes légers");
+        checkbox_visu_status = createCheckbox(menu_sim_txt[1]);
+        checkbox_sd = createCheckbox(menu_sim_txt[2]);
+        checkbox_qt_sf = createCheckbox(menu_sim_txt[3]);
+        checkbox_qt_sl = createCheckbox(menu_sim_txt[4]);
     }
 
     radio_graph_visu = createRadio();
-    radio_graph_visu.option('Visuation linéaire ----', 0);
-    radio_graph_visu.option(' Visuation logarithmique', 1);
+    radio_graph_visu.option(menu_sim_txt[5], 0);
+    radio_graph_visu.option(menu_sim_txt[6], 1);
     radio_graph_visu.value('0');
-    radio_graph_visu.position(width - 460, 525);
+    radio_graph_visu.position(width - 450, 525);
     radio_graph_visu.style('color', color(255));
 }
 
@@ -213,15 +222,21 @@ function simulation() {
     graph.display();
 
 
+    if (radio_lang.value() == 0) {
+        var sim_txt = ['Jour', 'Sains - Non-immunisés :', 'Total infectés :', 'Asymptomatiques :', 'Symptômes légers :', 'Symptômes forts :', 'Symptômes extrêmes :', 'Morts :', 'Immunisés :'];
+    } else if (radio_lang.value() == 1) {
+        var sim_txt = ['Day', 'Healthy - Non-immune :', 'Total infected :', 'Asymptomatics :', 'Mild symptoms :', 'Strong symptoms :', 'Extreme symptoms :', 'Dead :', 'Immunized : '];
+    }
+
     var decal_txt = 40;
-    
+
     strokeWeight(1);
-    
+
     textSize(20);
     fill(255);
     stroke(255);
     textAlign(LEFT);
-    text('Jour', ville.x2 + 20, decal_txt);
+    text(sim_txt[0], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(jour, ville.x2 + 300 - 20, decal_txt);
 
@@ -230,7 +245,7 @@ function simulation() {
     fill(colors.S);
     stroke(colors.S);
     textAlign(LEFT);
-    text('Sains - Non-immunisés :', ville.x2 + 20, decal_txt);
+    text(sim_txt[1], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_santé[0], ville.x2 + 300 - 20, decal_txt);
 
@@ -239,7 +254,7 @@ function simulation() {
     fill(colors.I);
     stroke(colors.I);
     textAlign(LEFT);
-    text('Total infectés :', ville.x2 + 20, decal_txt);
+    text(sim_txt[2], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_santé[1], ville.x2 + 300 - 20, decal_txt);
 
@@ -248,7 +263,7 @@ function simulation() {
     fill(colors.A);
     stroke(colors.A);
     textAlign(LEFT);
-    text('Assymptomatique :', ville.x2 + 20, decal_txt);
+    text(sim_txt[3], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_symptome[0], ville.x2 + 300 - 20, decal_txt);
 
@@ -257,7 +272,7 @@ function simulation() {
     fill(colors.SL);
     stroke(colors.SL);
     textAlign(LEFT);
-    text('Symptômes légers :', ville.x2 + 20, decal_txt);
+    text(sim_txt[4], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_symptome[1], ville.x2 + 300 - 20, decal_txt);
 
@@ -266,7 +281,7 @@ function simulation() {
     fill(colors.SF);
     stroke(colors.SF);
     textAlign(LEFT);
-    text('Symptômes forts :', ville.x2 + 20, decal_txt);
+    text(sim_txt[5], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_symptome[2], ville.x2 + 300 - 20, decal_txt);
 
@@ -275,7 +290,7 @@ function simulation() {
     fill(colors.SE);
     stroke(colors.SE);
     textAlign(LEFT);
-    text('Symptômes extrêmes :', ville.x2 + 20, decal_txt);
+    text(sim_txt[6], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_symptome[3], ville.x2 + 300 - 20, decal_txt);
 
@@ -284,7 +299,7 @@ function simulation() {
     fill(colors.M);
     stroke(colors.M);
     textAlign(LEFT);
-    text('Morts :', ville.x2 + 20, decal_txt);
+    text(sim_txt[7], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_santé[2], ville.x2 + 300 - 20, decal_txt);
 
@@ -293,7 +308,7 @@ function simulation() {
     fill(colors.R);
     stroke(colors.R);
     textAlign(LEFT);
-    text('Remis - Immunisée :', ville.x2 + 20, decal_txt);
+    text(sim_txt[8], ville.x2 + 20, decal_txt);
     textAlign(RIGHT);
     text(count_santé[3], ville.x2 + 300 - 20, decal_txt);
 
